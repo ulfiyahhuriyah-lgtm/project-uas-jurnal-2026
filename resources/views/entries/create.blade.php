@@ -10,8 +10,7 @@
 
 <nav class="bg-[#111] px-6 py-4 flex justify-between items-center border-b border-[#2a2a2a]">
     <a href="{{ route('entries.index') }}" class="text-[#aaa] text-sm hover:text-white">← Kembali</a>
-    <div class="text-white font-bold text-lg tracking-widest">TULIS JURNAL</div>
-    <div class="w-16"></div>
+    
 </nav>
 
 <div class="max-w-3xl mx-auto px-6 py-8">
