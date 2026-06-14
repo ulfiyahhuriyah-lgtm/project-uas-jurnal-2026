@@ -17,7 +17,7 @@ return new class extends Migration
         $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
         $table->string('title');
         $table->text('content');
-        $table->enum('mood', ['happy', 'neutral', 'sad', 'angry', 'sleepy'])->default('neutral');
+        $table->enum('mood', ['happy', 'neutral', 'sad', 'angry', 'sleepy', 'frustrated'])->default('neutral');
         $table->string('image_path')->nullable();
         $table->date('entry_date');
         $table->timestamps();
