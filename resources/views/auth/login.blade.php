@@ -1,47 +1,143 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Jurnal 2026</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Georgia', serif;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+        }
+        h1 {
+            color: #fff;
+            font-size: 36px;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 32px;
+            letter-spacing: 0.02em;
+        }
+        .card {
+            background: #d4d0cb;
+            border-radius: 20px;
+            padding: 32px 28px;
+        }
+        .book-icon {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        input {
+            width: 100%;
+            background: #555;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 18px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        input::placeholder { color: #bbb; }
+        .forgot {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .forgot a {
+            color: #666;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .btn-login {
+            width: 100%;
+            background: #555;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 12px;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+        .btn-login:hover { background: #444; }
+        .register-link {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+        }
+        .register-link a {
+            color: #333;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .error-msg {
+            background: #ff6b6b22;
+            border: 1px solid #ff6b6b55;
+            color: #ff6b6b;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            font-family: sans-serif;
+        }
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .remember input { width: auto; }
+        .remember label { color: #555; font-size: 13px; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <div class="card">
+            <div class="book-icon">📓</div>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
+            @if ($errors->any())
+                <div class="error-msg">{{ $errors->first() }}</div>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email"
+                        value="{{ old('email') }}" required autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="remember">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">Ingat saya</label>
+                </div>
+                <div class="forgot">
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}">Lupa password?</a>
+                    @endif
+                </div>
+                <button type="submit" class="btn-login">LANJUT</button>
+                <div class="register-link">
+                    Belum punya akun? <a href="{{ route('register') }}">Daftar</a>
+                </div>
+            </form>
         </div>
-    </form>
-</x-guest-layout>
+    </div>
+</body>
+</html>
