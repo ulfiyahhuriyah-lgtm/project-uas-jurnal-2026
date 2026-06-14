@@ -10,17 +10,23 @@ use Illuminate\Support\Facades\Storage;
 class EntryController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Entry::where('user_id', auth()->id())->with('category');
+{
+    $query = Entry::where('user_id', auth()->id())->with('category');
 
-        if ($request->search) {
-            $query->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('content', 'like', '%' . $request->search . '%');
-        }
-
-        $entries = $query->orderBy('entry_date', 'desc')->get();
-        return view('entries.index', compact('entries'));
+    if ($request->search) {
+        $query->where(function($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->search . '%')
+              ->orWhere('content', 'like', '%' . $request->search . '%');
+        });
     }
+
+    if ($request->category) {
+        $query->where('category_id', $request->category);
+    }
+
+    $entries = $query->orderBy('entry_date', 'desc')->get();
+    return view('entries.index', compact('entries'));
+}
 
     public function create()
     {

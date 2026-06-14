@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         $table->string('name');
-        $table->string('color')->default('#6366f1');
+        $table->text('color')->default('linear-gradient(135deg, #f5c842, #e8a800)');
         $table->timestamps();
     });
 }

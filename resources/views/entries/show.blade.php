@@ -56,7 +56,7 @@
 
             {{-- Foto --}}
             @if($entry->image_path)
-                <img src="{{ Storage::url($entry->image_path) }}"
+               <img src="{{ asset('storage/' . $entry->image_path) }}"
                     class="rounded-xl mb-6 w-full max-h-64 object-cover">
             @endif
 

@@ -11,7 +11,7 @@
 <nav class="bg-[#111] px-6 py-4 flex justify-between items-center border-b border-[#2a2a2a]">
     <div class="text-white font-bold text-lg tracking-widest">DASHBOARD</div>
     <div class="flex items-center gap-4">
-        <a href="{{ route('categories.index') }}" class="text-[#aaa] text-sm hover:text-white">Kategori</a>
+        <a href="{{ route('categories.index') }}" class="text-[#aaa] text-sm hover:text-white">Buku</a>
         <div class="relative group">
             <div class="w-9 h-9 rounded-full bg-[#4ade80] flex items-center justify-center text-black font-bold text-sm cursor-pointer">
                 {{ substr(auth()->user()->name, 0, 1) }}
@@ -31,15 +31,13 @@
 
 <div class="max-w-5xl mx-auto px-6 py-8">
 
-    {{-- Header --}}
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-white text-2xl">my jurnal</h1>
         <div class="flex gap-3 items-center">
-            <form method="GET" action="{{ route('entries.index') }}">
-                <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="cari jurnal....."
-                    class="bg-[#2a2a2a] text-[#aaa] text-sm rounded-full px-4 py-2 outline-none border border-[#333]">
-            </form>
+            <input type="text" id="searchInput"
+                placeholder="cari jurnal atau folder....."
+                class="bg-[#2a2a2a] text-[#aaa] text-sm rounded-full px-4 py-2 outline-none border border-[#333]"
+                oninput="filterAll(this.value)">
             <a href="{{ route('entries.create') }}"
                 class="bg-[#4ade80] text-black text-sm font-medium rounded-full px-5 py-2">
                 + Tulis
@@ -55,7 +53,8 @@
 
     {{-- Kategori/Folder --}}
     <div class="mb-8">
-        <div class="grid grid-cols-4 gap-4">
+        <p class="text-[#555] text-xs tracking-widest mb-4">FOLDER KATEGORI</p>
+        <div class="grid grid-cols-4 gap-4" id="foldersGrid">
             @php
                 $colors = [
                     'linear-gradient(135deg, #f5c842, #e8a800)',
@@ -71,10 +70,11 @@
             @endphp
 
             @foreach($categories as $cat)
-            <a href="{{ route('entries.index', ['category' => $cat->id]) }}"
-                class="bg-[#2a2a2a] rounded-2xl p-4 cursor-pointer hover:bg-[#333] transition">
+            <a href="{{ route('categories.show', $cat->id) }}"
+                class="folder-item bg-[#2a2a2a] rounded-2xl p-4 cursor-pointer hover:bg-[#333] transition"
+                data-name="{{ $cat->name }}">
                 <div class="w-full rounded-xl mb-3 flex items-center justify-center text-xs font-bold tracking-widest"
-                    style="background: {{ $colors[$i % count($colors)] }}; aspect-ratio: 3/4; color: rgba(0,0,0,0.5);">
+                    style="background: {{ $cat->color ?? $colors[$i % count($colors)] }}; aspect-ratio: 3/4; color: rgba(0,0,0,0.5);">
                     NOTES
                 </div>
                 <div class="text-[#ccc] text-sm font-medium">{{ $cat->name }}</div>
@@ -83,7 +83,6 @@
             @php $i++; @endphp
             @endforeach
 
-            {{-- Tombol folder baru --}}
             <a href="{{ route('categories.create') }}"
                 class="bg-[#222] rounded-2xl p-4 cursor-pointer border-2 border-dashed border-[#444] hover:border-[#4ade80] transition flex flex-col items-center justify-center min-h-[160px]">
                 <div class="text-[#444] text-4xl mb-2">+</div>
@@ -95,9 +94,10 @@
     {{-- Jurnal Terbaru --}}
     <div>
         <p class="text-[#555] text-xs tracking-widest mb-4">JURNAL TERBARU</p>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-4" id="entriesGrid">
             @forelse($entries as $entry)
-            <div class="bg-[#2a2a2a] rounded-2xl p-5 hover:bg-[#333] transition">
+            <div class="entry-item bg-[#2a2a2a] rounded-2xl p-5 hover:bg-[#333] transition"
+                data-title="{{ $entry->title }}">
                 <div class="flex justify-between items-start mb-2">
                     <a href="{{ route('entries.show', $entry) }}"
                         class="text-white text-base font-medium hover:underline">
@@ -120,14 +120,6 @@
                     {{ $entry->category->name }}
                 </span>
                 @endif
-                <div class="flex gap-3 mt-3">
-                    <a href="{{ route('entries.edit', $entry) }}" class="text-yellow-500 text-xs">Edit</a>
-                    <form method="POST" action="{{ route('entries.destroy', $entry) }}">
-                        @csrf @method('DELETE')
-                        <button class="text-red-500 text-xs"
-                            onclick="return confirm('Hapus jurnal ini?')">Hapus</button>
-                    </form>
-                </div>
             </div>
             @empty
             <div class="col-span-2 text-center text-[#555] py-12">
@@ -137,6 +129,24 @@
         </div>
     </div>
 </div>
+
+<script>
+function filterAll(keyword) {
+    keyword = keyword.toLowerCase();
+
+    // Filter folder
+    document.querySelectorAll('.folder-item').forEach(folder => {
+        const name = folder.getAttribute('data-name').toLowerCase();
+        folder.style.display = name.includes(keyword) ? 'block' : 'none';
+    });
+
+    // Filter jurnal
+    document.querySelectorAll('.entry-item').forEach(entry => {
+        const title = entry.getAttribute('data-title').toLowerCase();
+        entry.style.display = title.includes(keyword) ? 'block' : 'none';
+    });
+}
+</script>
 
 </body>
 </html>

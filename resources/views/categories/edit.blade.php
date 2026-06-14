@@ -1,41 +1,94 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            🏷️ Edit Kategori
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Kategori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&display=swap');
+        body { font-family: 'EB Garamond', Georgia, serif; }
+        .color-option { cursor: pointer; border: 3px solid transparent; border-radius: 50%; }
+        .color-option.selected { border-color: white; }
+    </style>
+</head>
+<body class="bg-[#1a1a1a] min-h-screen">
 
-    <div class="py-6 max-w-xl mx-auto px-4">
-        <form method="POST" action="{{ route('categories.update', $category) }}">
-            @csrf
-            @method('PUT')
+<nav class="bg-[#111] px-6 py-4 flex justify-between items-center border-b border-[#2a2a2a]">
+    <a href="{{ route('categories.index') }}" class="text-[#aaa] text-sm hover:text-white font-sans">← Kembali</a>
+    <div class="text-white font-bold text-sm tracking-widest font-sans">EDIT BUKU</div>
+    <div class="w-16"></div>
+</nav>
 
-            <div class="bg-white rounded shadow p-6 space-y-4">
-                <!-- Nama Kategori -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Nama Kategori</label>
-                    <input type="text" name="name" value="{{ old('name', $category->name) }}"
-                        class="mt-1 w-full border rounded px-3 py-2" required>
-                </div>
+<div class="max-w-md mx-auto px-6 py-8">
+    <form method="POST" action="{{ route('categories.update', $category) }}">
+        @csrf
+        @method('PUT')
 
-                <!-- Warna -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Warna</label>
-                    <input type="color" name="color" value="{{ old('color', $category->color) }}"
-                        class="mt-1 h-10 w-20 border rounded px-1 py-1">
-                </div>
-
-                <div class="flex gap-2">
-                    <button type="submit"
-                        class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
-                        Update
-                    </button>
-                    <a href="{{ route('categories.index') }}"
-                        class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400">
-                        Batal
-                    </a>
-                </div>
+        <div class="bg-[#2a2a2a] rounded-2xl p-6 space-y-5">
+            {{-- Preview Buku --}}
+            <div id="bookPreview" class="w-32 mx-auto rounded-xl flex items-center justify-center text-xs font-bold tracking-widest"
+                style="background: {{ $category->color }}; aspect-ratio: 3/4; color: rgba(0,0,0,0.4);">
+                NOTES
             </div>
-        </form>
-    </div>
-</x-app-layout>
+
+            {{-- Pilih Warna --}}
+            <div>
+                <label class="text-[#666] text-xs tracking-widest font-sans block mb-3">PILIH WARNA SAMPUL</label>
+                <div class="flex gap-3 flex-wrap justify-center">
+                    @php
+                        $presets = [
+                            'linear-gradient(135deg, #f5c842, #e8a800)',
+                            'linear-gradient(135deg, #f87171, #dc2626)',
+                            'linear-gradient(135deg, #fb923c, #ea580c)',
+                            'linear-gradient(135deg, #7eb8f7, #4a90d9)',
+                            'linear-gradient(135deg, #7ed99a, #3ab865)',
+                            'linear-gradient(135deg, #b8a0f0, #8060d0)',
+                            'linear-gradient(135deg, #f7a8c4, #e06090)',
+                            'linear-gradient(135deg, #6ee7b7, #059669)',
+                            'linear-gradient(135deg, #fda4af, #e11d48)',
+                        ];
+                    @endphp
+                    @foreach($presets as $preset)
+                    <div class="color-option w-10 h-10 {{ $category->color == $preset ? 'selected' : '' }}"
+                        style="background: {{ $preset }}"
+                        onclick="selectColor('{{ $preset }}', this)">
+                    </div>
+                    @endforeach
+                </div>
+                <input type="hidden" name="color" id="colorInput" value="{{ $category->color }}">
+            </div>
+
+            {{-- Nama --}}
+            <div>
+                <label class="text-[#666] text-xs tracking-widest font-sans">NAMA KATEGORI</label>
+                <input type="text" name="name" value="{{ old('name', $category->name) }}" required
+                    class="w-full bg-[#222] text-white rounded-xl px-4 py-3 mt-1 outline-none border border-[#333] font-sans">
+            </div>
+
+            {{-- Tombol --}}
+            <div class="flex gap-3 pt-2">
+                <button type="submit"
+                    class="flex-1 bg-[#4ade80] text-black font-medium rounded-full py-3 hover:bg-[#22c55e] transition font-sans">
+                    Update
+                </button>
+                <a href="{{ route('categories.index') }}"
+                    class="flex-1 bg-[#333] text-[#aaa] rounded-full py-3 text-center hover:bg-[#444] transition font-sans">
+                    Batal
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function selectColor(gradient, el) {
+    document.getElementById('bookPreview').style.background = gradient;
+    document.getElementById('colorInput').value = gradient;
+    document.querySelectorAll('.color-option').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+}
+</script>
+
+</body>
+</html>
