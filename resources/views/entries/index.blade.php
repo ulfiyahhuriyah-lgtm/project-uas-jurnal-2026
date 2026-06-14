@@ -38,10 +38,6 @@
                 placeholder="cari jurnal atau folder....."
                 class="bg-[#2a2a2a] text-[#aaa] text-sm rounded-full px-4 py-2 outline-none border border-[#333]"
                 oninput="filterAll(this.value)">
-            <a href="{{ route('entries.create') }}"
-                class="bg-[#4ade80] text-black text-sm font-medium rounded-full px-5 py-2">
-                + Tulis
-            </a>
         </div>
     </div>
 
@@ -83,11 +79,6 @@
             @php $i++; @endphp
             @endforeach
 
-            <a href="{{ route('categories.create') }}"
-                class="bg-[#222] rounded-2xl p-4 cursor-pointer border-2 border-dashed border-[#444] hover:border-[#4ade80] transition flex flex-col items-center justify-center min-h-[160px]">
-                <div class="text-[#444] text-4xl mb-2">+</div>
-                <div class="text-[#555] text-xs">Folder Baru</div>
-            </a>
         </div>
     </div>
 
